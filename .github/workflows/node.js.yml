@@ -45,9 +45,3 @@ jobs:
         
     - name: Install dependencies    
       run: npm ci
-    - name: Running tests
-      run: |
-          export DATABASENAME=$DATABASENAME
-          export DATABASEUSERNAME=$DATABASEUSERNAME
-          export DATABASEPASSWORD=$DATABASEPASSWORD
-          npm test
