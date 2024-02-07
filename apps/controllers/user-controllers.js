@@ -1,0 +1,147 @@
+import {User} from '../models/user-model.js';
+import {setResponseHeaders} from '../utils.js';
+import bcrypt from 'bcrypt';
+
+export const create = async (request, response) => {
+    setResponseHeaders(response);
+    try {
+
+      const allowedFields = ['first_name', 'last_name', 'username', 'password'];
+      const extraFields = Object.keys(request.body).filter(field => !allowedFields.includes(field));
+      if (extraFields.length > 0) {
+        return response.status(400).json({ message : 'Only fields allowed are first_name, last_name, username, password'});
+      }
+      
+      const missingOrEmptyFields = allowedFields.filter(field => {
+        const value = request.body[field];
+        return !value || typeof value !== 'string' || value.trim() === '';
+      });
+  
+      if (missingOrEmptyFields.length > 0) {
+        return response.status(400).json({ message : `Only fields allowed are first_name, last_name, username, password and they should be non empty strings` });
+      }
+
+    const emailCheckRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    if (!emailCheckRegex.test(request.body.username)) {
+      return response.status(400).json({ message: 'Invalid email address format for username' });
+    }
+
+    const passwordCheckRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,15}$/;
+    if (!passwordCheckRegex.test(request.body.password)) {
+      return response.status(400).json({ message: 'Invalid password. Password should contain atleast one capital letter, one special character one digit and its length should be between 8-15' });
+    }
+
+      
+      const userFound = await User.findOne({ 
+        where: { username : request.body.username } 
+    });
+
+    if(userFound){
+        return response.status(400).json({message : 'Username already present. Please try with a new email address.'});
+    } 
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(request.body.password, salt);
+
+    const user = await User.create({
+      first_name : request.body.first_name,
+      last_name : request.body.last_name,
+      password : hashedPassword,
+      username : request.body.username
+    });
+    
+    const responseData = {
+      id : user.id,
+      first_name : user.first_name,
+      last_name : user.last_name,
+      username : user.username,
+      account_created : user.account_created,
+      account_updated : user.account_updated
+    }
+
+    return response.status(201).json(responseData);
+  } catch (error) {
+    console.log(error);
+    response.status(400).send();
+  }
+}
+
+export const fetch = async (request, response) => {
+    setResponseHeaders(response);
+    try {
+      const authHeader = request.headers.authorization;
+      const encodedCredentials = authHeader.split(' ')[1];
+      const credentials = Buffer.from(encodedCredentials, 'base64').toString('utf-8');
+      const [username, password] = credentials.split(':');
+  
+      const userFound = await User.findOne({ 
+          where: { username: username },
+          attributes: {
+              exclude: ['password']
+          }
+      });
+        response.status(200).json(userFound);
+      } catch (error) {
+        response.status(400).send();
+      }
+}
+
+export const update = async (request, response) => {
+    setResponseHeaders(response);
+    try {
+
+      const authHeader = request.headers.authorization;
+      const encodedCredentials = authHeader.split(' ')[1];
+      const credentials = Buffer.from(encodedCredentials, 'base64').toString('utf-8');
+      const [username, password] = credentials.split(':');
+
+      const allowedFields = ['first_name', 'last_name', 'password'];
+      const extraFields = Object.keys(request.body).filter(field => !allowedFields.includes(field));
+      if (extraFields.length > 0) {
+        return response.status(400).json({ message : 'Only fields allowed are first_name, last_name, password for update'});
+      }
+  
+      const missingOrEmptyFields = allowedFields.filter(field => {
+        const value = request.body[field];
+        if(value === undefined || !value){
+          return;
+        }
+        return typeof value !== 'string' || value.trim() === '';
+      });
+  
+      if (missingOrEmptyFields.length > 0) {
+        return response.status(400).json({ message : `Only fields allowed are first_name, last_name, password and should be non empty strings` });
+      }
+
+      if(Object.keys(request.body).length === 0){
+        setResponseHeaders(response);
+        return response.status(400).json({message : 'Please provide first_name, last_name, password for update'});
+    }
+
+    if(request.body.password !== undefined){
+      const passwordCheckRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,15}$/;
+      if (!passwordCheckRegex.test(request.body.password)) {
+       return response.status(400).json({ message: 'Invalid password. Password should contain atleast one capital letter, one special character one digit and its length should be between 8-15' });
+      }
+
+
+    if (request.body.password) {
+      const salt = await bcrypt.genSalt(10);
+      var updateHashedPassword = await bcrypt.hash(request.body.password, salt)
+    }
+    }
+    
+
+    const userUpdated = {
+      first_name: request.body.first_name,
+      last_name: request.body.last_name,
+      password: updateHashedPassword,
+    }
+
+    const updateUser = await User.update(userUpdated, {
+      where: { username: username }
+  })
+      response.status(204).send();
+    } catch (error) {
+      response.status(400).send();
+    }
+}
