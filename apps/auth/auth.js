@@ -1,5 +1,5 @@
 import {User} from "../models/user-model.js";
-import bcrypt from 'bcrypt';
+import bcryptjs from 'bcryptjs';
 import { setResponseHeaders } from "../utils.js";
 export const auth = async (request, response, next) => {
     const authHeader = request.headers.authorization;
@@ -24,7 +24,7 @@ export const auth = async (request, response, next) => {
         setResponseHeaders(response); 
         return response.status(401).send({message : 'Invalid username or password'});
     }
-    const checkPassword = bcrypt.compareSync(password, userFound.password);
+    const checkPassword = bcryptjs.compareSync(password, userFound.password);
     if(!checkPassword){
         setResponseHeaders(response); 
         return response.status(401).send({message : 'Invalid username or password'});
