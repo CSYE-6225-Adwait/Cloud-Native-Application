@@ -1,6 +1,6 @@
 import {User} from '../models/user-model.js';
 import {setResponseHeaders} from '../utils.js';
-import bcrypt from 'bcrypt';
+import bcryptjs from 'bcryptjs';
 
 export const create = async (request, response) => {
     setResponseHeaders(response);
@@ -39,8 +39,8 @@ export const create = async (request, response) => {
     if(userFound){
         return response.status(400).json({message : 'Username already present. Please try with a new email address.'});
     } 
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(request.body.password, salt);
+    const salt = await bcryptjs.genSalt(10);
+    const hashedPassword = await bcryptjs.hash(request.body.password, salt);
 
     const user = await User.create({
       first_name : request.body.first_name,
@@ -125,8 +125,8 @@ export const update = async (request, response) => {
 
 
     if (request.body.password) {
-      const salt = await bcrypt.genSalt(10);
-      var updateHashedPassword = await bcrypt.hash(request.body.password, salt)
+      const salt = await bcryptjs.genSalt(10);
+      var updateHashedPassword = await bcryptjs.hash(request.body.password, salt)
     }
     }
     
