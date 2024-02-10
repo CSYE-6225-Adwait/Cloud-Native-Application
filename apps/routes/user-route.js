@@ -1,11 +1,11 @@
 import express from 'express';
-import * as controller from '../controllers/user-controllers.js';
+import * as controller from '../controllers/user-controllerss.js';
 import {auth} from '../auth/auth.js';
 import { GetMethodOnlyAndNoPayload } from '../middleware.js';
 
 const router = express.Router();
 
-router.post('/',controller.create);
+router.post('/',controller.createe);
 
 router.get('/self',auth,controller.fetch)
 
