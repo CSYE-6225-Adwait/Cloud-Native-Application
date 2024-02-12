@@ -39,5 +39,8 @@
     "transform": {
       "^.+\\.js$": "babel-jest"
     }
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^8.4.1"
   }
 }
