@@ -14,18 +14,18 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      DATABASENAME: dbname
-      DATABASEUSERNAME: uname
-      DATABASEPASSWORD: passwordz
+      DATABASENAME: ${{ secrets.DB_NAME }}
+      DATABASEUSERNAME: ${{ secrets.DB_USERNAME }}
+      DATABASEPASSWORD: ${{ secrets.DB_PASSWORD }}
 
     services:
       mysql:
         image: mysql:8.0
         env:
-          MYSQL_ROOT_PASSWORD: password
-          MYSQL_DATABASE: dbname
-          MYSQL_USER: uname
-          MYSQL_PASSWORD : passwordz
+          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          MYSQL_DATABASE: ${{ secrets.DB_NAME }}
+          MYSQL_USER: ${{ secrets.DB_USERNAME }}
+          MYSQL_PASSWORD : ${{ secrets.DB_PASSWORD }}
         ports:
           - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
