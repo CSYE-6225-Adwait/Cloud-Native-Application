@@ -18,4 +18,8 @@ Nue ID - 002201568
 1. Created GET,PUT,POST user related API with basic authentication.
 2. Application automatically bootstraps the database at startup 
 3. Implemented Continuous Integration (CI) with GitHub Actions
+4. Deploy application on centos
 
+#### Assignment 3
+1. Create integration testcases for user APIs
+2. Develop Git workflow file to run test cases before a merge request
