@@ -66,7 +66,7 @@ describe('Integration Tests for /v1/user endpoint', () => {
 
     expect(createUserResponse.status).toBe(201);
     expect(createUserResponse.body).toHaveProperty('id');
-    expect(createUserResponse.body.first_name).toBe(fakeFName+"dasdsad");
+    expect(createUserResponse.body.first_name).toBe(fakeFName);
     expect(createUserResponse.body.last_name).toBe(fakeLName);
     expect(createUserResponse.body.username).toBe(fakeEmail);
 
