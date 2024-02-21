@@ -17,16 +17,16 @@ variable "gcp_private_key_file" {
 
 
 source "googlecompute" "my_image" {
-  project_id         = var.gcp_project_id
+  project_idd         = var.gcp_project_id
   source_image_family = "centos-stream-8"
-  image_name         = "custom-machine-image-${formatdate("YYYY-MM-DD-hh-mm-ss", timestamp())}"
-  image_family       = "custom-family"
-  zone               = "us-east1-b"
-  ssh_username       = "packer"
-  credentials_file   = var.gcp_private_key_file
-  image_description  = "Machine Image with Node.js and MySQL on CentOS Stream 8"
-  use_internal_ip    = false
-  network            = "default"
+  image_name          = "custom-machine-image-${formatdate("YYYY-MM-DD-hh-mm-ss", timestamp())}"
+  image_family        = "custom-family"
+  zone                = "us-east1-b"
+  ssh_username        = "packer"
+  credentials_file    = var.gcp_private_key_file
+  image_description   = "Machine Image with Node.js and MySQL on CentOS Stream 8"
+  use_internal_ip     = false
+  network             = "default"
 }
 
 build {
