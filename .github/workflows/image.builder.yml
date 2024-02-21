@@ -7,7 +7,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     env:
       DATABASENAME: ${{ secrets.DB_NAME }}
       DATABASEUSERNAME: ${{ secrets.DB_USERNAME }}
