@@ -1,0 +1,57 @@
+name: Image Builder
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"] 
+
+jobs:
+  node_build:
+    runs-on: ubuntu-latest
+    name: Installing & Testing the webapp (node application)
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: 20
+  
+    - name: Install dependencies
+      run: npm i
+
+    - name: Run testcases
+      run: npm test
+
+    - name: Create .env file
+      run: |
+        echo > .env
+        ls -al | grep .env
+        echo DATABASEUSERNAME=${{ secrets.DB_USERNAME }} >> .env
+        echo DATABASEPASSWORD=${{ secrets.DB_PASSWORD }} >> .env
+        echo DATABASENAME=${{ secrets.DB_NAME }} >> .env
+
+    - name: Zip webapp 
+      run: |
+        zip -r webapp.zip ./
+        ls 
+
+    - name: Install and Configure gcloud CLI
+      uses: 'google-github-actions/auth@v2'
+      with:
+        credentials_json: '${{ secrets.GCP_KEY }}'
+        export_default_credentials: true
+
+    - name: Setup packer
+      uses: hashicorp/setup-packer@main
+      id: setup
+      with:
+        version: "1.10.1"
+
+    - name: Packer Format
+      run: packer fmt -check .
+
+    - name: Packer Validate
+      run: packer validate gcp.pkr.hcl
+
+    - name: Packer Builder
+      run: packer build gcp.pkr.hcl
+
