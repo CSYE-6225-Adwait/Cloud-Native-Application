@@ -8,6 +8,12 @@ jobs:
   node_build:
     runs-on: ubuntu-latest
     name: Installing & Testing the webapp (node application)
+
+    env:
+      DATABASENAME: ${{ secrets.DB_NAME }}
+      DATABASEUSERNAME: ${{ secrets.DB_USERNAME }}
+      DATABASEPASSWORD: ${{ secrets.DB_PASSWORD }}
+
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js
