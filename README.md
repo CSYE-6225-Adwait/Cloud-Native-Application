@@ -23,3 +23,11 @@ Nue ID - 002201568
 #### Assignment 3
 1. Create integration testcases for user APIs
 2. Develop Git workflow file to run test cases before a merge request
+
+#### Assignment 4
+1. Created Packer file to create golden images on gcp.
+2. Added Workflow files to validate and build packer files.
+3. To Build Packer file run 
+    packer init .
+    packer fmt .
+    packer validate gcp.pkr.hcl
