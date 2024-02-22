@@ -30,9 +30,9 @@ sudo unzip -o /tmp/webapp.zip -d /opt/app
 
 sudo rm /tmp/webapp.zip
 
-sudo chown -R csye6225:csye6225 /opt/app/webapp
+sudo chown -R csye6225:csye6225 /opt/app
 
-cd /opt/app/webapp
+cd /opt/app/
 
 ls -al
 
