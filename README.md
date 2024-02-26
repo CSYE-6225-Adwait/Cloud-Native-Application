@@ -1,6 +1,6 @@
 # Web Application
-Name - Adwait Changan
-Nue ID - 002201568
+Name : Adwait Changan
+Nue ID : 002201568
 
 ## Instructions to Run the application Locally: 
 1. Clone the Organization Repository
