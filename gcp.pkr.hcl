@@ -12,7 +12,7 @@ variable "gcp_project_id" {
 }
 
 source "googlecompute" "my_image" {
-  project_id          = var.gcp_project_id
+  project_id          =   var.gcp_project_id
   source_image_family = "centos-stream-8"
   image_name          = "custom-machine-image-${formatdate("YYYY-MM-DD-hh-mm-ss", timestamp())}"
   image_family        = "custom-family"
