@@ -30,9 +30,6 @@ jobs:
       run: |
         echo > .env
         ls -al | grep .env
-        echo DATABASEUSERNAME=${{ secrets.DB_USERNAME }} >> .env
-        echo DATABASEPASSWORD=${{ secrets.DB_PASSWORD }} >> .env
-        echo DATABASENAME=${{ secrets.DB_NAME }} >> .env
 
     - name: Zip webapp 
       run: |

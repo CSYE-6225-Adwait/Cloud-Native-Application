@@ -4,13 +4,13 @@ import mysql2 from 'mysql2/promise';
 
 dotenv.config();
 export const sequelize = new Sequelize(process.env.DATABASENAME, process.env.DATABASEUSERNAME, process.env.DATABASEPASSWORD, {
-    host: 'localhost',
+    host: process.env.DATABASEURL,
     dialect: 'mysql'
 });
 
 const createDatabase = async () => {
     const connection = await mysql2.createConnection({
-        host: 'localhost',
+        host: process.env.DATABASEURL,
         user: process.env.DATABASEUSERNAME,
         password: process.env.DATABASEPASSWORD,
     });
