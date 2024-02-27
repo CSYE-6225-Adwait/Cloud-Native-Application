@@ -7,16 +7,16 @@ sudo dnf install -y unzip
 # Install Node.js and npm
 sudo dnf module install -y nodejs:20
 node -v
-# Install MySQL
-sudo dnf install -y mysql-server
+# # Install MySQL
+# sudo dnf install -y mysql-server
 
-# Start MySQL service
-sudo systemctl start mysqld
+# # Start MySQL service
+# sudo systemctl start mysqld
 
-# Enable MySQL service on boot
-sudo systemctl enable mysqld
+# # Enable MySQL service on boot
+# sudo systemctl enable mysqld
 
-sudo mysql --connect-expired-password -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY 'root';"
+# sudo mysql --connect-expired-password -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY 'root';"
 
 sudo adduser csye6225 --user-group --shell /usr/sbin/nologin
 
@@ -43,6 +43,3 @@ sudo cp /tmp/systemd.service /etc/systemd/system/csye6225.service
 sudo systemctl daemon-reload
 
 sudo systemctl enable csye6225.service
-
-
-#packer build -var 'DB_PASSWORD=Newpass@24' -var 'DB_USERNAME=userr' gcp.pkr.hcl
