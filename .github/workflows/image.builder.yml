@@ -26,11 +26,6 @@ jobs:
     - name: Running tests
       run: npm test
 
-    - name: Create .env file
-      run: |
-        echo > .env
-        ls -al | grep .env
-
     - name: Zip webapp 
       run: |
         zip -r webapp.zip ./
