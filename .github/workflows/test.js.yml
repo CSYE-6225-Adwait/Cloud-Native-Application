@@ -17,6 +17,7 @@ jobs:
       DATABASENAME: ${{ secrets.DB_NAME }}
       DATABASEUSERNAME: ${{ secrets.DB_USERNAME }}
       DATABASEPASSWORD: ${{ secrets.DB_PASSWORD }}
+      DATABASEURL: ${{ secrets.DB_URL }}
 
     strategy:
       matrix:
@@ -36,8 +37,4 @@ jobs:
     - name: Install dependencies    
       run: npm ci
     - name: Running tests
-      run: |
-          export DATABASENAME=$DATABASENAME
-          export DATABASEUSERNAME=$DATABASEUSERNAME
-          export DATABASEPASSWORD=$DATABASEPASSWORD
-          npm test
+      run: npm test

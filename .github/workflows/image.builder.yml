@@ -11,6 +11,7 @@ jobs:
       DATABASENAME: ${{ secrets.DB_NAME }}
       DATABASEUSERNAME: ${{ secrets.DB_USERNAME }}
       DATABASEPASSWORD: ${{ secrets.DB_PASSWORD }}
+      DATABASEURL: ${{ secrets.DB_URL }}
 
     steps:
     - uses: actions/checkout@v2
