@@ -33,5 +33,5 @@ Nue ID : 002201568
     packer validate gcp.pkr.hcl
 
 #### Assignment 5
-1. Updated Shell script to remove installation of mySQL server in local for instance
-2. Instance will get use mySQL cloud instance for webapp
+1. Updated Shell script to remove installation of mySQL server in local for instance.
+2. Instance will get use mySQL cloud instance for webapp.
