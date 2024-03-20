@@ -21,7 +21,7 @@ const createDatabase = async () => {
 
     try {
         await connection.query(`CREATE DATABASE IF NOT EXISTS ${process.env.DATABASENAME}`);
-        logger.info(`Database ${process.env.DATABASENAME} created`);
+        logger.debug(`Database ${process.env.DATABASENAME} created`);
     } catch (error) {
         logger.error('Error creating the database');
     } finally {
@@ -32,9 +32,9 @@ const createDatabase = async () => {
 export const initializeDatabase = async () => {
     try {
         await sequelize.authenticate();
-        logger.info('Connection to the database has been established successfully.');
+        logger.debug('Connection to the database has been established successfully.');
     } catch (error) {
-        logger.warn(`Database ${process.env.DATABASENAME}  not present`)
+        logger.warn(`Database ${process.env.DATABASENAME} not present`)
         await createDatabase();
     }
 };
