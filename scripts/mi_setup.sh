@@ -40,6 +40,16 @@ sudo npm i --no-progress
 
 sudo cp /tmp/systemd.service /etc/systemd/system/csye6225.service
 
+sudo rm /tmp/systemd.service
+
 sudo systemctl daemon-reload
 
 sudo systemctl enable csye6225.service
+
+sudo curl -O https://dl.google.com/cloudagents/add-google-cloud-ops-agent-repo.sh
+
+sudo bash add-google-cloud-ops-agent-repo.sh --also-install
+
+sudo cp /tmp/config.yaml /etc/google-cloud-ops-agent/config.yaml
+
+sudo rm /tmp/config.yaml

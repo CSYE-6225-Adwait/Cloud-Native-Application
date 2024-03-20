@@ -1,6 +1,7 @@
 import {User} from '../models/user-model.js';
 import {setResponseHeaders} from '../utils.js';
 import bcryptjs from 'bcryptjs';
+import logger from '../logger/logger.js';
 
 export const create = async (request, response) => {
     setResponseHeaders(response);
@@ -9,6 +10,7 @@ export const create = async (request, response) => {
       const allowedFields = ['first_name', 'last_name', 'username', 'password'];
       const extraFields = Object.keys(request.body).filter(field => !allowedFields.includes(field));
       if (extraFields.length > 0) {
+        logger.error('Request failed as only fields allowed are first_name, last_name, username, password');
         return response.status(400).json({ message : 'Only fields allowed are first_name, last_name, username, password'});
       }
       
@@ -18,16 +20,19 @@ export const create = async (request, response) => {
       });
   
       if (missingOrEmptyFields.length > 0) {
+        logger.error('Request failed as only fields allowed are first_name, last_name, username, password and they should be non empty strings');
         return response.status(400).json({ message : `Only fields allowed are first_name, last_name, username, password and they should be non empty strings` });
       }
 
     const emailCheckRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
     if (!emailCheckRegex.test(request.body.username)) {
+      logger.error('Request failed as invalid email address format for username provided');
       return response.status(400).json({ message: 'Invalid email address format for username' });
     }
 
     const passwordCheckRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,15}$/;
     if (!passwordCheckRegex.test(request.body.password)) {
+      logger.error('Request failed as Password should contain atleast one capital letter, one special character one digit and its length should be between 8-15');
       return response.status(400).json({ message: 'Invalid password. Password should contain atleast one capital letter, one special character one digit and its length should be between 8-15' });
     }
 
@@ -37,6 +42,7 @@ export const create = async (request, response) => {
     });
 
     if(userFound){
+       logger.error('Request failed as username already present. Please try with a new email address.');
         return response.status(400).json({message : 'Username already present. Please try with a new email address.'});
     } 
     const salt = await bcryptjs.genSalt(10);
@@ -57,10 +63,10 @@ export const create = async (request, response) => {
       account_created : user.account_created,
       account_updated : user.account_updated
     }
-
+    logger.info('User created successfully')
     return response.status(201).json(responseData);
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     response.status(400).send();
   }
 }
@@ -79,8 +85,10 @@ export const fetch = async (request, response) => {
               exclude: ['password']
           }
       });
+      logger.info('User fetch successfully')
         response.status(200).json(userFound);
       } catch (error) {
+        logger.error(error);
         response.status(400).send();
       }
 }
@@ -97,6 +105,7 @@ export const update = async (request, response) => {
       const allowedFields = ['first_name', 'last_name', 'password'];
       const extraFields = Object.keys(request.body).filter(field => !allowedFields.includes(field));
       if (extraFields.length > 0) {
+        logger.error('Request failed as only fields allowed are first_name, last_name, password for update');
         return response.status(400).json({ message : 'Only fields allowed are first_name, last_name, password for update'});
       }
   
@@ -109,10 +118,12 @@ export const update = async (request, response) => {
       });
   
       if (missingOrEmptyFields.length > 0) {
+        logger.error('Request failed as only fields allowed are first_name, last_name, password and should be non empty strings');
         return response.status(400).json({ message : `Only fields allowed are first_name, last_name, password and should be non empty strings` });
       }
 
       if(Object.keys(request.body).length === 0){
+        logger.error('Request failed as please provide first_name, last_name, password for update');
         setResponseHeaders(response);
         return response.status(400).json({message : 'Please provide first_name, last_name, password for update'});
     }
@@ -120,6 +131,7 @@ export const update = async (request, response) => {
     if(request.body.password !== undefined){
       const passwordCheckRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,15}$/;
       if (!passwordCheckRegex.test(request.body.password)) {
+        logger.error('Request failed as invalid password provided. Password should contain atleast one capital letter, one special character one digit and its length should be between 8-15');
        return response.status(400).json({ message: 'Invalid password. Password should contain atleast one capital letter, one special character one digit and its length should be between 8-15' });
       }
 
@@ -139,9 +151,11 @@ export const update = async (request, response) => {
 
     const updateUser = await User.update(userUpdated, {
       where: { username: username }
-  })
+  })  
+      logger.info('User updated successfully')
       response.status(204).send();
     } catch (error) {
+      logger.error(error);
       response.status(400).send();
     }
 }
