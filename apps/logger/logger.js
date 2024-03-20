@@ -1,9 +1,11 @@
 import winston from 'winston';
+import fs from 'fs';
+import path from 'path';
 
 const logger = winston.createLogger({
   transports: [
     new winston.transports.Console(),
-    new winston.transports.File({ filename: '/var/log/webapp/webapp.log' })
+    new winston.transports.File({ filename: '/var/log/webapp.log' })
   ],
   format: winston.format.combine(
     winston.format.timestamp({ format: 'YYYY-MM-DDTHH:mm:ss.SSS[Z]' }),
