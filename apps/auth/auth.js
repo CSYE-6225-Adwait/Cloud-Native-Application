@@ -1,13 +1,16 @@
 import {User} from "../models/user-model.js";
 import bcryptjs from 'bcryptjs';
+import logger from "../logger/logger.js";
 import { setResponseHeaders } from "../utils.js";
 export const auth = async (request, response, next) => {
     const authHeader = request.headers.authorization;
     if(!authHeader){
+        logger.error('Request failed as auth header is not present');
         setResponseHeaders(response); 
         return response.status(401).send(); 
     }
     if(!authHeader.split(' ')[0] === 'Basic'){
+        logger.error('Request failed as basic auth is not present');
         setResponseHeaders(response); 
         return response.status(401).send();
     }
@@ -21,15 +24,15 @@ export const auth = async (request, response, next) => {
     });
 
     if(!userFound){
+        logger.error('Request failed as invalid username or password');
         setResponseHeaders(response); 
         return response.status(401).send({message : 'Invalid username or password'});
     }
     const checkPassword = bcryptjs.compareSync(password, userFound.password);
     if(!checkPassword){
+        logger.error('Request failed as invalid username or password');
         setResponseHeaders(response); 
         return response.status(401).send({message : 'Invalid username or password'});
     }
     next();
 }
-
-//"xyz abc" xyz:abc  Basic lrnwerewr;kewrkwerw

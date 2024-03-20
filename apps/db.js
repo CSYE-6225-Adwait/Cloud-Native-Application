@@ -1,11 +1,15 @@
 import dotenv from "dotenv";
 import Sequelize from 'sequelize';
 import mysql2 from 'mysql2/promise';
+import logger from './logger/logger.js';
 
 dotenv.config();
 export const sequelize = new Sequelize(process.env.DATABASENAME, process.env.DATABASEUSERNAME, process.env.DATABASEPASSWORD, {
     host: process.env.DATABASEURL,
-    dialect: 'mysql'
+    dialect: 'mysql',
+    // logging: (msg) => {
+    //     logger.debug(msg);
+    // }
 });
 
 const createDatabase = async () => {
@@ -17,9 +21,9 @@ const createDatabase = async () => {
 
     try {
         await connection.query(`CREATE DATABASE IF NOT EXISTS ${process.env.DATABASENAME}`);
-        console.log(`Database ${process.env.DATABASENAME} created`);
+        logger.info(`Database ${process.env.DATABASENAME} created`);
     } catch (error) {
-        console.error('Error creating the database');
+        logger.error('Error creating the database');
     } finally {
         await connection.end();
     }
@@ -28,8 +32,9 @@ const createDatabase = async () => {
 export const initializeDatabase = async () => {
     try {
         await sequelize.authenticate();
-        console.log('Connection to the database has been established successfully.');
+        logger.info('Connection to the database has been established successfully.');
     } catch (error) {
+        logger.warn(`Database ${process.env.DATABASENAME}  not present`)
         await createDatabase();
     }
 };

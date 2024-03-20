@@ -16,6 +16,7 @@ source "googlecompute" "my_image" {
   source_image_family = "centos-stream-8"
   image_name          = "custom-machine-image-${formatdate("YYYY-MM-DD-hh-mm-ss", timestamp())}"
   image_family        = "custom-family"
+  machine_type        = "e2-medium"
   zone                = "us-east1-b"
   ssh_username        = "packer"
   image_description   = "Machine Image with Node.js and MySQL on CentOS Stream 8"
@@ -34,6 +35,11 @@ build {
   provisioner "file" {
     source      = "./scripts/systemd.service"
     destination = "/tmp/systemd.service"
+  }
+
+  provisioner "file" {
+    source      = "./scripts/config.yaml"
+    destination = "/tmp/config.yaml"
   }
 
   provisioner "shell" {
