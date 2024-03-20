@@ -3,6 +3,15 @@ import { sequelize } from '../apps/db.js';
 import {initialize} from '../apps/app.js';
 import { faker } from '@faker-js/faker';
 
+jest.mock('../apps/logger/logger', () => {
+  return {
+    error: jest.fn(),
+    warn: jest.fn(),
+    info: jest.fn(),
+    debug: jest.fn()
+  };
+});
+
 let app;
 
 beforeAll(async () => {

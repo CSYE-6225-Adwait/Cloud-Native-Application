@@ -53,3 +53,7 @@ sudo bash add-google-cloud-ops-agent-repo.sh --also-install
 sudo cp /tmp/config.yaml /etc/google-cloud-ops-agent/config.yaml
 
 sudo rm /tmp/config.yaml
+
+sudo mkdir -p /var/log/webapp
+
+sudo chown -R csye6225:csye6225 /var/log/webapp
