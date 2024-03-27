@@ -11,7 +11,7 @@ router.get('/self',auth,controller.fetch)
 
 router.put('/self',auth,controller.update)
 
-router.put('/self',controller.verify)
+router.get('/verify',controller.verify)
 
 
 export default router;
