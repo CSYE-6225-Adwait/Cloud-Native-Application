@@ -18,6 +18,7 @@ jobs:
       DATABASEUSERNAME: ${{ secrets.DB_USERNAME }}
       DATABASEPASSWORD: ${{ secrets.DB_PASSWORD }}
       DATABASEURL: ${{ secrets.DB_URL }}
+      ENVRUN: ${{ secrets.ENV_RUN }}
 
     strategy:
       matrix:

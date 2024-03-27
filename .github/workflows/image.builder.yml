@@ -12,6 +12,7 @@ jobs:
       DATABASEUSERNAME: ${{ secrets.DB_USERNAME }}
       DATABASEPASSWORD: ${{ secrets.DB_PASSWORD }}
       DATABASEURL: ${{ secrets.DB_URL }}
+      ENVRUN: ${{ secrets.ENV_RUN }}
 
     steps:
     - uses: actions/checkout@v2

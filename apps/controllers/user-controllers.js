@@ -178,14 +178,14 @@ export const update = async (request, response) => {
 export const verify = async (request, response) => {
   setResponseHeaders(response);
   try {
-    const token = req.query.token;
-    const user = await User.findOne({ where: { id:token } });
+    const token = request.query.token;
+    const user = await User.findOne({ where: { verification_token:token } });
     if (!user) {
-      return res.status(400).send('Invalid token');
+      return response.status(400).send('Invalid token');
     }
     const now = new Date();
     const verificationExpiry = new Date(user.verification_expiry_at);
-    if(now > verificationExpiry){
+    if(now < verificationExpiry){
       await User.update({ is_verified: true }, { where: { id: user.id } });
       logger.info('User verified successfully')
       response.status(200).send('User verified successfully');
