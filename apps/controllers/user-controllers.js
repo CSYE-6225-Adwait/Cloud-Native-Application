@@ -3,7 +3,6 @@ import {setResponseHeaders} from '../utils.js';
 import bcryptjs from 'bcryptjs';
 import logger from '../logger/logger.js';
 import { PubSub } from '@google-cloud/pubsub';
-import { v4 as uuidv4 } from 'uuid';
 
 const pubsub = new PubSub({ projectId: 'csye6225-414123' });
 
