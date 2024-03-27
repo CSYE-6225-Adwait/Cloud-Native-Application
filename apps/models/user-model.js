@@ -36,7 +36,23 @@ export const User = sequelize.define('User',{
         type: DataTypes.DATE,
         allowNull: false,
     },
-      
+    verification_token: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        allowNull: false
+    },
+    verification_sent_at: {
+        type: DataTypes.DATE,
+        allowNull: true
+    },
+    verification_expiry_at: {
+        type: DataTypes.DATE,
+        allowNull: true
+    },
+    is_verified: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false
+    } 
 },
 {
     createdAt: 'account_created',

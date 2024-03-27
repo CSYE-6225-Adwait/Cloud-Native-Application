@@ -2,6 +2,10 @@ import {User} from '../models/user-model.js';
 import {setResponseHeaders} from '../utils.js';
 import bcryptjs from 'bcryptjs';
 import logger from '../logger/logger.js';
+import { PubSub } from '@google-cloud/pubsub';
+import { v4 as uuidv4 } from 'uuid';
+
+const pubsub = new PubSub({ projectId: 'csye6225-414123' });
 
 export const create = async (request, response) => {
     setResponseHeaders(response);
@@ -35,8 +39,6 @@ export const create = async (request, response) => {
       logger.error('Request failed as Password should contain atleast one capital letter, one special character one digit and its length should be between 8-15');
       return response.status(400).json({ message: 'Invalid password. Password should contain atleast one capital letter, one special character one digit and its length should be between 8-15' });
     }
-
-      
       const userFound = await User.findOne({ 
         where: { username : request.body.username } 
     });
@@ -47,12 +49,12 @@ export const create = async (request, response) => {
     } 
     const salt = await bcryptjs.genSalt(10);
     const hashedPassword = await bcryptjs.hash(request.body.password, salt);
-
     const user = await User.create({
       first_name : request.body.first_name,
       last_name : request.body.last_name,
       password : hashedPassword,
-      username : request.body.username
+      username : request.body.username,
+      is_verified : false
     });
     
     const responseData = {
@@ -63,11 +65,25 @@ export const create = async (request, response) => {
       account_created : user.account_created,
       account_updated : user.account_updated
     }
+    await publishMessage(user.first_name, user.username, user.verification_token);
+    console.log(user.first_name, user.verification_token)
     logger.info('User created successfully')
     return response.status(201).json(responseData);
   } catch (error) {
     logger.error(error);
     response.status(400).send();
+  }
+}
+
+async function publishMessage(firstName,email,token) {
+  const topicName = 'verify_email'; 
+  const data = Buffer.from(JSON.stringify({firstName,email,token}));
+  console.log(data)
+  try {
+    await pubsub.topic(topicName).publish(data);
+    logger.info("Message published successfully to Pub/Sub");
+  } catch (error) {
+    logger.error("Error publishing message to Pub/Sub:", error);
   }
 }
 
@@ -154,6 +170,31 @@ export const update = async (request, response) => {
   })  
       logger.info('User updated successfully')
       response.status(204).send();
+    } catch (error) {
+      logger.error(error);
+      response.status(400).send();
+    }
+}
+
+export const verify = async (request, response) => {
+  setResponseHeaders(response);
+  try {
+    const token = req.query.token;
+    const user = await User.findOne({ where: { id:token } });
+    if (!user) {
+      return res.status(400).send('Invalid token');
+    }
+    const now = new Date();
+    const verificationExpiry = new Date(user.verification_expiry_at);
+    if(now > verificationExpiry){
+      await User.update({ is_verified: true }, { where: { id: user.id } });
+      logger.info('User verified successfully')
+      response.status(200).send('User verified successfully');
+    }else{
+      logger.error('User verification unsuccessfull as time limit excceded');
+      response.status(400).send('User verification unsuccessfull as token expired');
+    }
+    
     } catch (error) {
       logger.error(error);
       response.status(400).send();

@@ -7,9 +7,9 @@ dotenv.config();
 export const sequelize = new Sequelize(process.env.DATABASENAME, process.env.DATABASEUSERNAME, process.env.DATABASEPASSWORD, {
     host: process.env.DATABASEURL,
     dialect: 'mysql',
-    // logging: (msg) => {
-    //     logger.debug(msg);
-    // }
+    logging: (msg) => {
+        logger.debug(msg);
+    }
 });
 
 const createDatabase = async () => {
