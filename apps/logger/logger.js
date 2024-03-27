@@ -4,7 +4,7 @@ const logger = winston.createLogger({
   level: 'debug', 
   transports: [
     new winston.transports.Console(),
-    new winston.transports.File({ filename: './var/log/webapp/webapp.log' })
+    new winston.transports.File({ filename: '/var/log/webapp/webapp.log' })
   ],
   format: winston.format.combine(
     winston.format.timestamp({ format: 'YYYY-MM-DDTHH:mm:ss.SSS[Z]' }),
