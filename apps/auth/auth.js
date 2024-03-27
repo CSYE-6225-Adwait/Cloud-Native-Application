@@ -34,5 +34,10 @@ export const auth = async (request, response, next) => {
         setResponseHeaders(response); 
         return response.status(401).send({message : 'Invalid username or password'});
     }
+    if(!userFound.is_verified){
+        logger.error('Request failed as user is not verified');
+        setResponseHeaders(response); 
+        return response.status(403).send({message : 'Not a verified user'});
+    }
     next();
 }
