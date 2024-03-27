@@ -13,6 +13,7 @@
   "dependencies": {
     "@babel/core": "^7.23.9",
     "@babel/preset-env": "^7.23.9",
+    "@google-cloud/pubsub": "^4.3.3",
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.4.1",
     "express": "^4.18.2",
