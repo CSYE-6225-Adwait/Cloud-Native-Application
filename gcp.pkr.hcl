@@ -53,12 +53,6 @@ build {
       my_image_id = "${build.Resources.googlecompute.ImageId}"
     }
   }
+
 }
 
-output "my_image_id" {
-  value = "${local.my_image_id}"
-}
-
-locals {
-  my_image_id = "${jsondecode(file("packer-manifest.json"))["builds"][0]["custom_data"]["my_image_id"]}"
-}
