@@ -49,9 +49,6 @@ build {
   post-processor "manifest" {
     output     = "packer-manifest.json"
     strip_path = true
-    custom_data = {
-      my_image_id = "${build.Resources.googlecompute.ImageId}"
-    }
   }
 
 }
