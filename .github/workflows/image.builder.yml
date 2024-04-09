@@ -56,4 +56,43 @@ jobs:
 
     - name: Packer Builder
       run: packer build gcp.pkr.hcl
+    
+    - name: Get Image id
+      run: |
+        IMAGE_ID=$(packer output -json my_image_id | jq -r '.my_image_id.value')
+        echo "IMAGE_ID=$IMAGE_ID" >> $GITHUB_ENV
+        echo "Built GCP image ID is $IMAGE_ID"
 
+    - name: Generate Version
+      run: |
+        VERSION=$(date +%Y%m%d%H%M%S)
+        echo "VERSION=$VERSION" >> $GITHUB_ENV
+        ehco "Version is $VERSION"
+
+    - name: New Instance Template
+      run: |
+        gcloud compute instance-templates create "instance-template-${{ env.VERSION }}" \
+        --image="${{ env.IMAGE_ID }}" \
+        --image-family="custom-family" \
+        --machine-type="e2-medium" \
+        --region="us-east1" \
+        --tags="webapp" \
+        --network="vpc-network1" \
+        --subnet="subnet1" \
+        --network-tier="PREMIUM" \
+        --boot-disk-size=100GB \
+        --boot-disk-type="pd-balanced" \
+        --disk auto-delete=yes \
+        --lifecycle "create-before-destroy" \
+        --maintenance-policy="MIGRATE" \
+        --service-account="webapp-service-account@csye6225-414123.iam.gserviceaccount.com" \
+        --scopes=logging-write,monitoring-write,cloud-platform,pubsub \
+        --metadata-from-file startup-script=<(cat <<EOF
+        sudo touch /opt/app/.env
+        echo "DATABASEUSERNAME=webapp" >> /opt/app/.env
+        echo "DATABASEURL=10.150.0.2" >> /opt/app/.env
+        echo "DATABASEPASSWORD=UtLGHhb9Z5CSDiu5" >> /opt/app/.env
+        echo "DATABASENAME=webapp" >> /opt/app/.env
+        echo "ENVRUN=PRODUCTION" >> /opt/app/.env
+        EOF
+        )
