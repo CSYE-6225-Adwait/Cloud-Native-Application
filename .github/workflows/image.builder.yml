@@ -65,13 +65,14 @@ jobs:
 
     - name: Generate Version
       run: |
-        VERSION=$(date +%Y%m%d%H%M%S)
+        VERSION=$(date +%s)
         echo "VERSION=$VERSION" >> $GITHUB_ENV
         ehco "Version is $VERSION"
 
     - name: New Instance Template
       run: |
         gcloud compute instance-templates create "instance-template-${{ env.VERSION }}" \
+        --project="csye6225-414123"
         --image="${{ env.IMAGE_ID }}" \
         --image-family="custom-family" \
         --machine-type="e2-medium" \
