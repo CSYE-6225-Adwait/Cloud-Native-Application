@@ -76,7 +76,7 @@ jobs:
         --region="us-east1" \
         --tags="webapp" \
         --network="vpc-network1" \
-        --subnet="subnet1" \
+        --subnet="webapp" \
         --network-tier="PREMIUM" \
         --boot-disk-size=100GB \
         --boot-disk-type="pd-balanced" \
