@@ -96,24 +96,9 @@ jobs:
         EOF
         )
 
-    - name: Update Managed Instance Group
+    - name: Start Rolling Update
       run: |
-        NEW_INSTANCE_TEMPLATE="instance-template-${{ env.VERSION }}"
-        INSTANCE_GROUP_NAME="webapp-instance-region-group-manager"
-        INSTANCE_GROUP_REGION="us-east1"
-        NAMED_PORT_NAME="http"
-        NAMED_PORT_PORT="3000"
-        HEALTH_CHECK_NAME="compute-health-check"
-
-        gcloud compute instance-groups managed set-instance-template "$INSTANCE_GROUP_NAME" \
-        --template="$NEW_INSTANCE_TEMPLATE" \
-        --region="$INSTANCE_GROUP_REGION" \
-
-        gcloud compute instance-groups managed set-named-ports "$INSTANCE_GROUP_NAME" \
-        --named-ports="$NAMED_PORT_NAME:$NAMED_PORT_PORT" \
-        --region="$INSTANCE_GROUP_REGION"
-
-        gcloud compute instance-groups managed update "$INSTANCE_GROUP_NAME" \
-        --region="$INSTANCE_GROUP_REGION" \
-        --health-check="https://www.googleapis.com/compute/v1/projects/${{ env.PROJECT_ID }}/global/healthChecks/$HEALTH_CHECK_NAME" \
-        --initial-delay="300" \
+        gcloud compute instance-groups managed rolling-action start-update webapp-instance-region-group-manager \
+        --version='template=projects/csye6225-414123/regions/us-east1/instanceTemplates/instance-template-${{ env.VERSION }}' \
+        --region="us-east1" \
+        --project="csye6225-414123" \
