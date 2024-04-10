@@ -70,41 +70,41 @@ jobs:
     - name: New Instance Template
       run: |
         gcloud compute instance-templates create "instance-template-${{ env.VERSION }}" \
-        --project="csye6225-414123" \
+        --project="${{ secrets.PROJECTID }}" \
         --image="${{ env.IMAGE_ID }}" \
-        --machine-type="e2-medium" \
-        --region="us-east1" \
-        --tags="webapp" \
-        --network="vpc-network1" \
-        --subnet="webapp" \
-        --network-tier="PREMIUM" \
-        --boot-disk-size=100GB \
-        --boot-disk-type="pd-balanced" \
-        --instance-template-region=us-east1 \
-        --boot-disk-kms-key=projects/csye6225-414123/locations/us-east1/keyRings/kms-keyring-a5195a46/cryptoKeys/vm-key \
+        --machine-type="${{ secrets.MACHINE_TYPE }}" \
+        --region="${{ secrets.REGION }}" \
+        --tags="${{ secrets.TAGS }}" \
+        --network="${{ secrets.NETWORK }}" \
+        --subnet=${{ secrets.SUBNET }}" \
+        --network-tier="${{ secrets.NETWORKTIER }}" \
+        --boot-disk-size="${{ secrets.DISKSIZE }}" \
+        --boot-disk-type="${{ secrets.DISKTYPE }}" \
+        --instance-template-region="${{ secrets.REGION }}" \
+        --boot-disk-kms-key=projects/${{ secrets.PROJECTID }}/locations/us-east1/keyRings/${{ secrets.KMSRING }}/cryptoKeys/vm-key \
         --boot-disk-device-name=webapp-instance \
         --maintenance-policy="MIGRATE" \
-        --service-account="webapp-service-account@csye6225-414123.iam.gserviceaccount.com" \
-        --scopes=logging-write,monitoring-write,cloud-platform,pubsub \
+        --service-account="webapp-service-account@${{ secrets.PROJECTID }}.iam.gserviceaccount.com" \
+        --scopes=${{ secrets.SCOPES }} \
         --metadata-from-file startup-script=<(cat <<EOF
         sudo touch /opt/app/.env
-        echo "DATABASEUSERNAME=webapp" >> /opt/app/.env
-        echo "DATABASEURL=10.150.0.2" >> /opt/app/.env
-        echo "DATABASEPASSWORD=UtLGHhb9Z5CSDiu5" >> /opt/app/.env
-        echo "DATABASENAME=webapp" >> /opt/app/.env
+        echo "DATABASEUSERNAME=${{ secrets.DBNAME }}" >> /opt/app/.env
+        echo "DATABASEURL=${{ secrets.DBURLL }}" >> /opt/app/.env
+        echo "DATABASEPASSWORD=${{ secrets.DBPASSWORD }}" >> /opt/app/.env
+        echo "DATABASENAME=${{ secrets.DBNAME }}" >> /opt/app/.env
         echo "ENVRUN=PRODUCTION" >> /opt/app/.env
         EOF
         )
 
     - name: Start Rolling Update
       run: |
-        gcloud compute instance-groups managed rolling-action start-update webapp-instance-region-group-manager \
-        --version='template=projects/csye6225-414123/regions/us-east1/instanceTemplates/instance-template-${{ env.VERSION }}' \
-        --region="us-east1" \
-        --project="csye6225-414123" \
+        gcloud compute instance-groups managed rolling-action start-update ${{ secrets.MIGNAME }} \
+        --version='template=projects/${{ secrets.PROJECTID }}/regions/${{ secrets.REGION }}/instanceTemplates/instance-template-${{ env.VERSION }}' \
+        --region="${{ secrets.REGION }}" \
+        --project="${{ secrets.PROJECTID }}" \
 
     - name: Wait for refresh to complete
       run: |
-        gcloud compute instance-groups managed wait-until webapp-instance-region-group-manager \
+        gcloud compute instance-groups managed wait-until ${{ secrets.MIGNAME }} \
         --version-target-reached \
-        --region us-east1
+        --region ${{ secrets.REGION }}
