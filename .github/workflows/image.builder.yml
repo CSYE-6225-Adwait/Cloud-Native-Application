@@ -59,7 +59,7 @@ jobs:
     
     - name: Get Image id
       run: |
-        IMAGE_ID=$(packer output -json my_image_id | jq -r '.my_image_id.value')
+        IMAGE_ID=$(jq -r '.builds[-1].artifact_id' manifest.json | cut -d ":" -f2)
         echo "IMAGE_ID=$IMAGE_ID" >> $GITHUB_ENV
         echo "Built GCP image ID is $IMAGE_ID"
 
