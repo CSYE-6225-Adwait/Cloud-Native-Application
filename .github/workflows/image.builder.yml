@@ -82,7 +82,7 @@ jobs:
         --boot-disk-size=100GB \
         --boot-disk-type="pd-balanced" \
         --disk auto-delete=yes \
-        --lifecycle "create-before-destroy" \
+        --boot-disk-device-name=webapp-instance \
         --maintenance-policy="MIGRATE" \
         --service-account="webapp-service-account@csye6225-414123.iam.gserviceaccount.com" \
         --scopes=logging-write,monitoring-write,cloud-platform,pubsub \
