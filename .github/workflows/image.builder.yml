@@ -74,7 +74,7 @@ jobs:
         --boot-disk-size=100GB \
         --boot-disk-type="pd-balanced" \
         --instance-template-region=us-east1 \
-        --boot-disk-kms-key=projects/csye6225-414123/locations/us-east1/keyRings/kms-keyring-47c8eefe/cryptoKeys/vm-key \
+        --boot-disk-kms-key=projects/csye6225-414123/locations/us-east1/keyRings/${{ secrets.KMSRING }}/cryptoKeys/vm-key \
         --boot-disk-device-name=webapp-instance \
         --maintenance-policy="MIGRATE" \
         --service-account="webapp-service-account@csye6225-414123.iam.gserviceaccount.com" \
@@ -82,8 +82,8 @@ jobs:
         --metadata=startup-script='#!/bin/bash
         cat > /opt/app/.env << End
         DATABASEUSERNAME=webapp
-        DATABASEURL=192.168.0.2
-        DATABASEPASSWORD=CutHZF7BaedoOMEW
+        DATABASEURL=${{ secrets.DBURLL }}
+        DATABASEPASSWORD=${{ secrets.DBPASSWORD }}
         DATABASENAME=webapp
         ENVRUN=PRODUCTION
         End'
