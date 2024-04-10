@@ -80,7 +80,8 @@ jobs:
         --network-tier="PREMIUM" \
         --boot-disk-size=100GB \
         --boot-disk-type="pd-balanced" \
-        --no-boot-disk-auto-delete  \
+        --instance-template-region=us-east1 \
+        --boot-disk-kms-key=projects/csye6225-414123/locations/us-east1/keyRings/kms-keyring-a5195a46/cryptoKeys/vm-key \
         --boot-disk-device-name=webapp-instance \
         --maintenance-policy="MIGRATE" \
         --service-account="webapp-service-account@csye6225-414123.iam.gserviceaccount.com" \
