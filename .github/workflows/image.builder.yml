@@ -80,7 +80,7 @@ jobs:
         --network-tier="PREMIUM" \
         --boot-disk-size=100GB \
         --boot-disk-type="pd-balanced" \
-        --disk auto-delete=yes \
+        --no-boot-disk-auto-delete  \
         --boot-disk-device-name=webapp-instance \
         --maintenance-policy="MIGRATE" \
         --service-account="webapp-service-account@csye6225-414123.iam.gserviceaccount.com" \
