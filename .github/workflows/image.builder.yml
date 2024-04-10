@@ -74,11 +74,11 @@ jobs:
         --boot-disk-size="${{ secrets.DISKSIZE }}" \
         --boot-disk-type="${{ secrets.DISKTYPE }}" \
         --instance-template-region="${{ secrets.REGION }}" \
-        --boot-disk-kms-key=projects/${{ secrets.PROJECTID }}/locations/us-east1/keyRings/${{ secrets.KMSRING }}/cryptoKeys/vm-key \
-        --boot-disk-device-name=webapp-instance \
+        --boot-disk-kms-key="projects/${{ secrets.PROJECTID }}/locations/us-east1/keyRings/${{ secrets.KMSRING }}/cryptoKeys/vm-key" \
+        --boot-disk-device-name="webapp-instance" \
         --maintenance-policy="MIGRATE" \
         --service-account="webapp-service-account@${{ secrets.PROJECTID }}.iam.gserviceaccount.com" \
-        --scopes=${{ secrets.SCOPES }} \
+        --scopes="${{ secrets.SCOPES }}" \
         --metadata=startup-script='#!/bin/bash
         cat > /opt/app/.env << End
         DATABASEUSERNAME=webapp
