@@ -54,14 +54,7 @@ jobs:
     - name: Packer Validate
       run: packer validate gcp.pkr.hcl
 
-    - name: Packer Builder
-      run: packer build gcp.pkr.hcl
     
-    - name: Get Image id
-      run: |
-        IMAGE_ID=$(jq -r '.builds[-1].artifact_id' packer-manifest.json | cut -d ":" -f2)
-        echo "IMAGE_ID=$IMAGE_ID" >> $GITHUB_ENV
-        echo "Built GCP image ID is $IMAGE_ID"
 
     - name: Generate version number
       run: echo "VERSION=$(date +%s)" >> $GITHUB_ENV
@@ -71,7 +64,7 @@ jobs:
       run: |
         gcloud compute instance-templates create "instance-template-${{ env.VERSION }}" \
         --project="${{ secrets.PROJECTID }}" \
-        --image="${{ env.IMAGE_ID }}" \
+        --image="custom-machine-image-2024-04-10-19-08-49" \
         --machine-type="${{ secrets.MACHINE_TYPE }}" \
         --region="${{ secrets.REGION }}" \
         --tags="${{ secrets.TAGS }}" \
@@ -88,10 +81,10 @@ jobs:
         --scopes=${{ secrets.SCOPES }} \
         --metadata=startup-script='#!/bin/bash
         cat > /opt/app/.env << End
-        DATABASEUSERNAME=${{ secrets.DBNAME }}
-        DATABASEURL=${{ secrets.DBURLL }}
-        DATABASEPASSWORD=${{ secrets.DBPASSWORD }}
-        DATABASENAME=${{ secrets.DBNAME }}
+        DATABASEUSERNAME=webapp
+        DATABASEURL=192.168.0.2
+        DATABASEPASSWORD=CutHZF7BaedoOMEW
+        DATABASENAME=webapp
         ENVRUN=PRODUCTION
         End'
 
@@ -102,7 +95,7 @@ jobs:
         --region="${{ secrets.REGION }}" \
         --project="${{ secrets.PROJECTID }}" \
 
-    - name: Wait for refresh to complete
+    - name: Wait for refresh to complete 
       run: |
         gcloud compute instance-groups managed wait-until ${{ secrets.MIGNAME }} \
         --version-target-reached \
