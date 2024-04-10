@@ -63,15 +63,13 @@ jobs:
         echo "IMAGE_ID=$IMAGE_ID" >> $GITHUB_ENV
         echo "Built GCP image ID is $IMAGE_ID"
 
-    - name: Generate Version
-      run: |
-        VERSION=$(date +%Y%m%d%H%M%S)
-        echo "VERSION=$VERSION" >> $GITHUB_ENV
-        ehco "Version is $VERSION"
+    - name: Generate version number
+      run: echo "VERSION=$(date +%s)" >> $GITHUB_ENV
 
     - name: New Instance Template
       run: |
         gcloud compute instance-templates create "instance-template-${{ env.VERSION }}" \
+        --project="csye6225-414123"
         --image="${{ env.IMAGE_ID }}" \
         --image-family="custom-family" \
         --machine-type="e2-medium" \
