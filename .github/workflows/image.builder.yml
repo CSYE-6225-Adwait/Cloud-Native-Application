@@ -63,22 +63,22 @@ jobs:
     - name: New Instance Template
       run: |
         gcloud compute instance-templates create "instance-template-${{ env.VERSION }}" \
-        --project="${{ secrets.PROJECTID }}" \
-        --image="custom-machine-image-2024-04-10-19-08-49" \
-        --machine-type="${{ secrets.MACHINE_TYPE }}" \
-        --region="${{ secrets.REGION }}" \
-        --tags="${{ secrets.TAGS }}" \
-        --network="${{ secrets.NETWORK }}" \
-        --subnet=${{ secrets.SUBNET }}" \
-        --network-tier="${{ secrets.NETWORKTIER }}" \
-        --boot-disk-size="${{ secrets.DISKSIZE }}" \
-        --boot-disk-type="${{ secrets.DISKTYPE }}" \
-        --instance-template-region="${{ secrets.REGION }}" \
-        --boot-disk-kms-key=projects/${{ secrets.PROJECTID }}/locations/us-east1/keyRings/${{ secrets.KMSRING }}/cryptoKeys/vm-key \
+        --project="csye6225-414123" \
+        --image="${{ env.IMAGE_ID }}" \
+        --machine-type="e2-medium" \
+        --region="us-east1" \
+        --tags="webapp" \
+        --network="vpc-network1" \
+        --subnet="webapp" \
+        --network-tier="PREMIUM" \
+        --boot-disk-size=100GB \
+        --boot-disk-type="pd-balanced" \
+        --instance-template-region=us-east1 \
+        --boot-disk-kms-key=projects/csye6225-414123/locations/us-east1/keyRings/kms-keyring-a5195a46/cryptoKeys/vm-key \
         --boot-disk-device-name=webapp-instance \
         --maintenance-policy="MIGRATE" \
-        --service-account="webapp-service-account@${{ secrets.PROJECTID }}.iam.gserviceaccount.com" \
-        --scopes=${{ secrets.SCOPES }} \
+        --service-account="webapp-service-account@csye6225-414123.iam.gserviceaccount.com" \
+        --scopes=logging-write,monitoring-write,cloud-platform,pubsub \
         --metadata=startup-script='#!/bin/bash
         cat > /opt/app/.env << End
         DATABASEUSERNAME=webapp
