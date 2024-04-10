@@ -86,15 +86,14 @@ jobs:
         --maintenance-policy="MIGRATE" \
         --service-account="webapp-service-account@${{ secrets.PROJECTID }}.iam.gserviceaccount.com" \
         --scopes=${{ secrets.SCOPES }} \
-        --metadata-from-file startup-script=<(cat <<EOF
-        sudo touch /opt/app/.env
-        echo "DATABASEUSERNAME=${{ secrets.DBNAME }}" >> /opt/app/.env
-        echo "DATABASEURL=${{ secrets.DBURLL }}" >> /opt/app/.env
-        echo "DATABASEPASSWORD=${{ secrets.DBPASSWORD }}" >> /opt/app/.env
-        echo "DATABASENAME=${{ secrets.DBNAME }}" >> /opt/app/.env
-        echo "ENVRUN=PRODUCTION" >> /opt/app/.env
-        EOF
-        )
+        --metadata=startup-script='#!/bin/bash
+        cat > /opt/app/.env << End
+        DATABASEUSERNAME=${{ secrets.DBNAME }}
+        DATABASEURL=${{ secrets.DBURLL }}
+        DATABASEPASSWORD=${{ secrets.DBPASSWORD }}
+        DATABASENAME=${{ secrets.DBNAME }}
+        ENVRUN=PRODUCTION
+        End'
 
     - name: Start Rolling Update
       run: |
