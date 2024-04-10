@@ -54,8 +54,15 @@ jobs:
     - name: Packer Validate
       run: packer validate gcp.pkr.hcl
 
+    - name: Packer Builder
+      run: packer build gcp.pkr.hcl
     
-
+    - name: Get Image id
+      run: |
+        IMAGE_ID=$(jq -r '.builds[-1].artifact_id' packer-manifest.json | cut -d ":" -f2)
+        echo "IMAGE_ID=$IMAGE_ID" >> $GITHUB_ENV
+        echo "Built GCP image ID is $IMAGE_ID"
+    
     - name: Generate version number
       run: echo "VERSION=$(date +%s)" >> $GITHUB_ENV
 
@@ -63,7 +70,7 @@ jobs:
     - name: New Instance Template
       run: |
         gcloud compute instance-templates create "instance-template-${{ env.VERSION }}" \
-        --project="csye6225-414123" \
+        --project="${{ secrets.PROJECTID }}" \
         --image="${{ env.IMAGE_ID }}" \
         --machine-type="e2-medium" \
         --region="us-east1" \
@@ -74,10 +81,10 @@ jobs:
         --boot-disk-size=100GB \
         --boot-disk-type="pd-balanced" \
         --instance-template-region=us-east1 \
-        --boot-disk-kms-key=projects/csye6225-414123/locations/us-east1/keyRings/${{ secrets.KMSRING }}/cryptoKeys/vm-key \
+        --boot-disk-kms-key=projects/${{ secrets.PROJECTID }}/locations/us-east1/keyRings/${{ secrets.KMSRING }}/cryptoKeys/vm-key \
         --boot-disk-device-name=webapp-instance \
         --maintenance-policy="MIGRATE" \
-        --service-account="webapp-service-account@csye6225-414123.iam.gserviceaccount.com" \
+        --service-account="${{ secrets.SAWEBAPP }}" \
         --scopes=logging-write,monitoring-write,cloud-platform,pubsub \
         --metadata=startup-script='#!/bin/bash
         cat > /opt/app/.env << End
