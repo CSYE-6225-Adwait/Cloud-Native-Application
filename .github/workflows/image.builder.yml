@@ -102,3 +102,9 @@ jobs:
         --version='template=projects/csye6225-414123/regions/us-east1/instanceTemplates/instance-template-${{ env.VERSION }}' \
         --region="us-east1" \
         --project="csye6225-414123" \
+
+    - name: Wait for refresh to complete
+      run: |
+        gcloud compute instance-groups managed wait-until webapp-instance-region-group-manager \
+        --version-target-reached \
+        --region us-east1
