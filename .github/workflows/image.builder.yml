@@ -63,11 +63,9 @@ jobs:
         echo "IMAGE_ID=$IMAGE_ID" >> $GITHUB_ENV
         echo "Built GCP image ID is $IMAGE_ID"
 
-    - name: Generate Version
-      run: |
-        VERSION=$(date +%s)
-        echo "VERSION=$VERSION" >> $GITHUB_ENV
-        ehco "Version is $VERSION"
+    - name: Generate version number
+      run: echo "VERSION=$(date +%s)" >> $GITHUB_ENV
+
 
     - name: New Instance Template
       run: |
