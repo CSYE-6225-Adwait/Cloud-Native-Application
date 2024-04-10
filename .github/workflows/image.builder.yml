@@ -95,3 +95,40 @@ jobs:
         echo "ENVRUN=PRODUCTION" >> /opt/app/.env
         EOF
         )
+
+    - name: Update Managed Instance Group
+      run: |
+        NEW_INSTANCE_TEMPLATE="instance-template-${{ env.VERSION }}"
+        INSTANCE_GROUP_NAME="webapp-instance-region-group-manager"
+        INSTANCE_GROUP_REGION="us-east1"
+        BASE_INSTANCE_NAME="webapp-instance"
+        NAMED_PORT_NAME="http"
+        NAMED_PORT_PORT="3000"
+        HEALTH_CHECK_NAME="compute-health-check"
+        HEALTH_CHECK_INTERVAL="5"
+        HEALTH_CHECK_TIMEOUT="5"
+        HEALTH_CHECK_HEALTHY_THRESHOLD="2"
+        HEALTH_CHECK_UNHEALTHY_THRESHOLD="10"
+        HEALTH_CHECK_PORT="3000"
+        HEALTH_CHECK_PATH="/healthz"
+
+        gcloud compute instance-groups managed set-instance-template "$INSTANCE_GROUP_NAME" \
+        --instance-template="$NEW_INSTANCE_TEMPLATE" \
+        --region="$INSTANCE_GROUP_REGION" \
+        --base-instance-name="$BASE_INSTANCE_NAME" \
+        --update-strategy="NONE"
+
+        gcloud compute instance-groups managed set-named-ports "$INSTANCE_GROUP_NAME" \
+        --named-ports="$NAMED_PORT_NAME:$NAMED_PORT_PORT" \
+        --region="$INSTANCE_GROUP_REGION"
+
+        gcloud compute instance-groups managed update "$INSTANCE_GROUP_NAME" \
+        --region="$INSTANCE_GROUP_REGION" \
+        --health-check="https://www.googleapis.com/compute/v1/projects/${{ env.PROJECT_ID }}/global/healthChecks/$HEALTH_CHECK_NAME" \
+        --initial-delay="300" \
+        --health-check-interval="$HEALTH_CHECK_INTERVAL" \
+        --health-check-timeout="$HEALTH_CHECK_TIMEOUT" \
+        --health-check-healthy-threshold="$HEALTH_CHECK_HEALTHY_THRESHOLD" \
+        --health-check-unhealthy-threshold="$HEALTH_CHECK_UNHEALTHY_THRESHOLD" \
+        --health-check-port="$HEALTH_CHECK_PORT" \
+        --health-check-path="$HEALTH_CHECK_PATH"
