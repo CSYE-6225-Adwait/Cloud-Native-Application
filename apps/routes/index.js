@@ -4,5 +4,5 @@ import {GetMethodOnlyAndNoPayload} from '../middleware.js';
 
 export default (app) => {
     app.use('/healthz',GetMethodOnlyAndNoPayload, healthRouter)
-    app.use('/v1/user',userRouter)
+    app.use('/v2/user',userRouter)
 }
