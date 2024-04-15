@@ -50,7 +50,7 @@ describe("Test Healthz API",  () => {
   });
 });
 
-describe('Integration Tests for /v1/user endpoint', () => {
+describe('Integration Tests for /v2/user endpoint', () => {
 
   let userId;
   const fakeFName = faker.person.firstName();
@@ -63,7 +63,7 @@ describe('Integration Tests for /v1/user endpoint', () => {
 
   test('Verify account creation and validate existence with GET call', async () => {
     const createUserResponse = await request(app)
-      .post('/v1/user')
+      .post('/v2/user')
       .send({
         "first_name" : fakeFName,
         "last_name" : fakeLName,
@@ -80,7 +80,7 @@ describe('Integration Tests for /v1/user endpoint', () => {
     expect(createUserResponse.body.username).toBe(fakeEmail);
 
     const getUserResponse = await request(app)
-      .get(`/v1/user/self`)
+      .get(`/v2/user/self`)
       .auth(fakeEmail, fakePassword);
 
     expect(getUserResponse.status).toBe(200);
@@ -92,7 +92,7 @@ describe('Integration Tests for /v1/user endpoint', () => {
 
   test('Verify update user account and validate with GET call', async () => {
     const updateUserResponse = await request(app)
-      .put(`/v1/user/self`)
+      .put(`/v2/user/self`)
       .auth(fakeEmail, fakePassword)
       .send({
         first_name: fakeUpdateFName,
@@ -103,7 +103,7 @@ describe('Integration Tests for /v1/user endpoint', () => {
     expect(updateUserResponse.status).toBe(204);
 
     const getUserAfterUpdateResponse = await request(app)
-      .get(`/v1/user/self`)
+      .get(`/v2/user/self`)
       .auth(fakeEmail, fakeUpdatePassword);
 
     expect(getUserAfterUpdateResponse.status).toBe(200);
