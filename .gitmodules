@@ -1,0 +1,6 @@
+[submodule "serverless"]
+	path = serverless
+	url = https://github.com/CSYE-6225-Adwait/serverless
+[submodule "tf-gcp-infra"]
+	path = tf-gcp-infra
+	url = https://github.com/CSYE-6225-Adwait/tf-gcp-infra
